@@ -1,0 +1,12 @@
+# Compiled binaries
+*.exe
+*.out
+*.o
+
+# Common editor and IDE files
+.vscode/
+.vs/
+
+# Common log files or temporary files
+*.log
+*.tmp
