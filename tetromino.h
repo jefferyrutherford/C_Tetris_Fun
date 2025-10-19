@@ -2,16 +2,17 @@
 #define TETROMINO_H
 
 #include <stdio.h>
+#include <stdlib.h>
+
+
+#define TETROMINO_COUNT 4 // Update this when adding more shapes
 
 // Enumeration for different tetromino types
 typedef enum {
-    SHAPE_I,
+    SHAPE_I = 0,
     SHAPE_O,
     SHAPE_T,
-    SHAPE_S,
-    SHAPE_Z,
-    SHAPE_J,
-    SHAPE_L,
+    SHAPE_S
 
 } TetrominoType;
 
@@ -24,5 +25,6 @@ typedef struct {
 
 Tetromino create_tetromino(TetrominoType type);
 void draw_tetromino(Tetromino *p);
+Tetromino create_random_tetromino();
 
 #endif

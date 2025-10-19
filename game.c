@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <time.h>
 
 // Get Plaform specific sleep function
 #ifdef _WIN32
@@ -33,6 +34,10 @@ bool check_collision(Tetromino *piece) {
                 if (board_x < 0 || board_x >= BOARD_WIDTH) {
                     return true;
                 }
+                //3. Check collition with other locked pieces
+                if (board_y >= 0 && board[board_y][board_x]) {
+                    return true;
+                }
             }
         }
     }
@@ -60,8 +65,10 @@ void clear_screen() {
 }
 
 void start_game() {
+    srand((unsigned int)time(NULL));
+
     // Start with a new piece
-    Tetromino current_piece = create_tetromino(SHAPE_O);
+    Tetromino current_piece = create_random_tetromino();
    
 
 
@@ -78,6 +85,7 @@ void start_game() {
         } else {
             printf("Collision detected at y=%d\n", current_piece.y);
             lock_piece(&current_piece);
+            current_piece = create_random_tetromino(); // Spawn a new piece
             
         }
 
@@ -99,10 +107,8 @@ void handle_input(Tetromino *current_piece) {
     char input;
     // _getch() is a blocking call; need to check if a keyboard key was pressed.
     // https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/kbhit?view=msvc-170
-    if (_kbhit()) {
+    while (_kbhit()) {
         input = _getch(); // Read the key only if one is available
-    } else {
-        return; // No input to process
     }
 
     Tetromino next_check_piece = *current_piece;
