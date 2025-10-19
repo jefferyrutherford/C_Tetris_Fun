@@ -15,7 +15,8 @@
 #endif
 
 
-void handle_input(Tetromino *p); 
+void handle_input(Tetromino *p);
+void rotate(Tetromino *p);
 
 // check the piece for collition.
 bool check_collision(Tetromino *piece) {
@@ -121,8 +122,16 @@ void handle_input(Tetromino *current_piece) {
     else if (input == 'd') {
         next_check_piece.x++;
     }
+    // move down
+    else if (input == 's') {
+        next_check_piece.y++;
+    }
+    else if (input == 'w') {
+        // rotate piece clockwise
+        rotate(&next_check_piece);
+    }
 
-    // ToDo: w to rotate the piece
+    
 
     // can we move the piece?
     if (!check_collision(&next_check_piece)) {
@@ -131,4 +140,24 @@ void handle_input(Tetromino *current_piece) {
 
 }
 
+void rotate(Tetromino *p) {
+    int temp_shape[4][4];
+
+    // Transpose the matrix
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            temp_shape[j][i] = p->shape[i][j];
+        }
+    }
+
+    // Reverse each row to get a clockwise rotation
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            p->shape[i][j] = temp_shape[i][3 - j];
+        }
+    }
+
+    // Update rotation state
+    p->rotation = (p->rotation + 1) % 4;
+}
 
