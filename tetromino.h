@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 #define TETROMINO_COUNT 4 // Update this when adding more shapes
 
 // Enumeration for different tetromino types

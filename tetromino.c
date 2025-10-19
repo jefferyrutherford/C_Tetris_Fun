@@ -80,7 +80,7 @@ Tetromino create_tetromino(TetrominoType type) {
     return new_piece;
 }
 
-    void draw_tetromino(Tetromino *p) {
+void draw_tetromino(Tetromino *p) {
     for (int y = 0; y < 4; y++) {
         for (int x = 0; x < 4; x++) {
             if (p->shape[y][x] == 1) {

@@ -6,10 +6,10 @@
 #include <stdbool.h>
 #include <time.h>
 
-// Get Plaform specific sleep function
+
 #ifdef _WIN32
 #include <windows.h>
-#include <conio.h> //for _getch()
+#include <conio.h>
 #else
 #include <unistd.h>
 #endif
@@ -70,8 +70,6 @@ void start_game() {
 
     // Start with a new piece
     Tetromino current_piece = create_random_tetromino();
-   
-
 
     // The main game loop
     while (1) {
@@ -87,9 +85,7 @@ void start_game() {
             printf("Collision detected at y=%d\n", current_piece.y);
             lock_piece(&current_piece);
             current_piece = create_random_tetromino(); // Spawn a new piece
-            
         }
-
         // --- 2. Rendering (Clear and redraw) ---
         clear_screen();
         //draw_tetromino(&current_piece); // Draw the piece at its new position
@@ -130,9 +126,6 @@ void handle_input(Tetromino *current_piece) {
         // rotate piece clockwise
         rotate(&next_check_piece);
     }
-
-    
-
     // can we move the piece?
     if (!check_collision(&next_check_piece)) {
             *current_piece = next_check_piece; 
