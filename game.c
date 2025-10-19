@@ -8,9 +8,13 @@
 // Get Plaform specific sleep function
 #ifdef _WIN32
 #include <windows.h>
+#include <conio.h> //for _getch()
 #else
 #include <unistd.h>
 #endif
+
+
+void handle_input(Tetromino *p); 
 
 // check the piece for collition.
 bool check_collision(Tetromino *piece) {
@@ -23,6 +27,10 @@ bool check_collision(Tetromino *piece) {
 
                //1. Check collition with the floor
                 if (board_y >= BOARD_HEIGHT) {
+                    return true;
+                }
+                //2. Check collition with the walls
+                if (board_x < 0 || board_x >= BOARD_WIDTH) {
                     return true;
                 }
             }
@@ -59,6 +67,8 @@ void start_game() {
 
     // The main game loop
     while (1) {
+        handle_input(&current_piece);
+
         // --- 1. Game Logic (Move the piece down) ---
         Tetromino next_check_piece = current_piece;
         next_check_piece.y++;
@@ -83,6 +93,36 @@ void start_game() {
             usleep(500000); // 500,000 microseconds = 0.5 seconds
         #endif
     }
+}
+
+void handle_input(Tetromino *current_piece) {
+    char input;
+    // _getch() is a blocking call; need to check if a keyboard key was pressed.
+    // https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/kbhit?view=msvc-170
+    if (_kbhit()) {
+        input = _getch(); // Read the key only if one is available
+    } else {
+        return; // No input to process
+    }
+
+    Tetromino next_check_piece = *current_piece;
+    
+    // move left
+    if (input == 'a') {
+        next_check_piece.x--;
+    }
+    // move right
+    else if (input == 'd') {
+        next_check_piece.x++;
+    }
+
+    // ToDo: w to rotate the piece
+
+    // can we move the piece?
+    if (!check_collision(&next_check_piece)) {
+            *current_piece = next_check_piece; 
+    }
+
 }
 
 
