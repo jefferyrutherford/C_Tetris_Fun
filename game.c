@@ -2,12 +2,48 @@
 #include "board.h"
 #include "tetromino.h"
 
+#include <stdio.h>
+#include <stdbool.h>
+
 // Get Plaform specific sleep function
 #ifdef _WIN32
 #include <windows.h>
 #else
 #include <unistd.h>
 #endif
+
+// check the piece for collition.
+bool check_collision(Tetromino *piece) {
+    // Placeholder for collision detection logic
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (piece->shape[i][j]) { // If there's a block in this part of the tetromino
+                int board_x = piece->x + j;
+                int board_y = piece->y + i;
+
+               //1. Check collition with the floor
+                if (board_y >= BOARD_HEIGHT) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+// lock the piece on the board
+void lock_piece(Tetromino *p) {
+    for (int y = 0; y < 4; y++) {
+        for (int x = 0; x < 4; x++) {
+            if (p->shape[y][x] == 1) {
+                // IMPORTANT: We only write to the board if the block is on or below row 0
+                if (p->y + y >= 0) {
+                    board[p->y + y][p->x + x] = 1;
+                }
+            }
+        }
+    }
+}
 
 void clear_screen() {
    // This ANSI escape code clears the screen and moves the cursor to the top-left
@@ -17,12 +53,23 @@ void clear_screen() {
 
 void start_game() {
     // Start with a new piece
-    Tetromino current_piece = create_tetromino(SHAPE_I);
+    Tetromino current_piece = create_tetromino(SHAPE_O);
+   
+
 
     // The main game loop
     while (1) {
         // --- 1. Game Logic (Move the piece down) ---
-        current_piece.y++;
+        Tetromino next_check_piece = current_piece;
+        next_check_piece.y++;
+
+         if (!check_collision(&next_check_piece)) {
+            current_piece.y++; // SAFE: Move the actual piece down
+        } else {
+            printf("Collision detected at y=%d\n", current_piece.y);
+            lock_piece(&current_piece);
+            
+        }
 
         // --- 2. Rendering (Clear and redraw) ---
         clear_screen();
@@ -37,3 +84,5 @@ void start_game() {
         #endif
     }
 }
+
+
